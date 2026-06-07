@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: stepper-form-backend
+    ports:
+      - "3000:3000"
+    networks:
+      - stepper-form-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: stepper-form-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - stepper-form-net
+
+networks:
+  stepper-form-net:
+    driver: bridge
