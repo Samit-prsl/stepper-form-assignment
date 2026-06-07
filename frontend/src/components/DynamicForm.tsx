@@ -442,7 +442,7 @@ export default function DynamicForm({
 
   if (!formConfig || isLoading) {
     return (
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
         <DialogTitle>
           <Typography>Loading form...</Typography>
         </DialogTitle>
@@ -472,7 +472,8 @@ export default function DynamicForm({
           paper: {
             sx: {
               margin: { xs: 1, sm: 4 },
-              width: { xs: "100%", sm: "auto" },
+              width: { xs: "100%", sm: "700px", md: "860px", lg: "1000px" },
+              maxWidth: "none",
             },
           },
         }}
@@ -502,8 +503,8 @@ export default function DynamicForm({
         <DialogContent
           sx={{
             pt: 3,
-            minHeight: { xs: "auto", sm: "600px" },
-            px: { xs: 2, sm: 3 },
+            minHeight: { xs: "auto", sm: "600px", lg: "650px" },
+            px: { xs: 2, sm: 3, lg: 5 },
           }}
         >
           <Box sx={{ mb: 3 }}>
@@ -525,10 +526,10 @@ export default function DynamicForm({
                   sx={{
                     color: "#ccc",
                     fontWeight: 500,
-                    fontSize: "0.75rem",
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
                     pb: 1.5,
                     pt: 0,
-                    px: 2, 
+                    px: { xs: 1.5, sm: 3 },
                     "&.Mui-selected": { color: "#1a1a1a" },
                     position: "relative",
                     "&:after": completedSteps[index]
