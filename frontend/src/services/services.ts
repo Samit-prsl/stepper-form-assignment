@@ -2,8 +2,7 @@ import type { FormConfig } from "../types/form.types";
 import type { CreateFormPayload } from "../types/formBuilder.types";
 import type { CreateSubmissionResponse, SaveStepPayload, Submission, SubmissionListItem } from "../types/services.types";
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL_LOCAL;
-//const API_BASE_URL = import.meta.env.VITE_BACKEND_URL_DEPLOYED;
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL_DEPLOYED || import.meta.env.VITE_BACKEND_URL_LOCAL;
 
 export async function createFormConfig(payload: CreateFormPayload) {
   const response = await fetch(`${API_BASE_URL}form-config`, {
