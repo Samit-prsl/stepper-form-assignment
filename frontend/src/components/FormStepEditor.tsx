@@ -12,7 +12,11 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import FormFieldEditor from "./FormFieldEditor";
-import type { BuilderField, BuilderStep, FieldType } from "../types/formBuilder.types";
+import type {
+  BuilderField,
+  BuilderStep,
+  FieldType,
+} from "../types/formBuilder.types";
 
 interface FormStepEditorProps {
   step: BuilderStep;
@@ -72,13 +76,14 @@ export default function FormStepEditor({
     >
       <Box
         sx={{
-          px: 2.5,
+          px: { xs: 1.5, sm: 2.5 },
           py: 1.5,
           backgroundColor: "#fafafa",
           borderBottom: "1px solid #f0f0f0",
           display: "flex",
           alignItems: "center",
           gap: 1.5,
+          flexWrap: "wrap",
         }}
       >
         <DragIndicatorIcon sx={{ color: "#ccc", fontSize: "1.2rem" }} />
@@ -101,6 +106,8 @@ export default function FormStepEditor({
           size="small"
           sx={{
             flex: 1,
+            minWidth: { xs: "100%", sm: 0 },
+            order: { xs: 3, sm: 0 },
             "& .MuiOutlinedInput-root": {
               borderRadius: "6px",
               backgroundColor: "#fff",
@@ -120,8 +127,7 @@ export default function FormStepEditor({
         )}
       </Box>
 
-      {/* Fields */}
-      <Box sx={{ px: 2.5, py: 2 }}>
+      <Box sx={{ px: { xs: 1.5, sm: 2.5 }, py: 2 }}>
         <Stack spacing={2}>
           {step.fields.map((field) => (
             <FormFieldEditor

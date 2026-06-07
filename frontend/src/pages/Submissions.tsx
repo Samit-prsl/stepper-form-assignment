@@ -49,54 +49,36 @@ export default function SubmissionsPage() {
   const { data: formConfigList = [] } = useFormConfigList();
   const { data: activeFormConfig, isLoading } = useFormConfig(selectedFormId);
 
-
   const handleFormClose = () => {
     setOpenForm(false);
-
     setEditingSubmission(null);
-
     setSelectedFormId("");
-
     tableRef.current?.refetch();
-
-    queryClient.invalidateQueries({
-      queryKey: ["submissions"],
-    });
+    queryClient.invalidateQueries({ queryKey: ["submissions"] });
   };
 
   const handleOpenNewSubmission = async () => {
     setEditingSubmission(null);
-
     setSelectedFormId("");
-
     setOpenSelector(true);
-
-     await queryClient.invalidateQueries({
-       queryKey: ["formConfig"],
-     });
-
+    await queryClient.invalidateQueries({ queryKey: ["formConfig"] });
   };
 
   const handleContinueForm = () => {
     if (!selectedFormId) return;
-
     setOpenSelector(false);
-
     setOpenForm(true);
   };
 
   const handleOpenNewForm = async () => {
-    setOpenFormBuilder(true)
-  }
+    setOpenFormBuilder(true);
+  };
 
   const handleEditSubmission = async (submissionId: string) => {
     try {
       const submission = await getSubmissionById(submissionId);
-
       setEditingSubmission(submission);
-
       setSelectedFormId(submission.formConfigId);
-
       setOpenForm(true);
     } catch {
       setToast({
@@ -110,11 +92,7 @@ export default function SubmissionsPage() {
   const handleDeleteSubmission = async (submissionId: string) => {
     try {
       await deleteSubmission(submissionId);
-
-      await queryClient.invalidateQueries({
-        queryKey: ["submissions"],
-      });
-
+      await queryClient.invalidateQueries({ queryKey: ["submissions"] });
       setToast({
         open: true,
         severity: "success",
@@ -135,7 +113,7 @@ export default function SubmissionsPage() {
         sx={{
           minHeight: "100vh",
           backgroundColor: "#f5f5f5",
-          py: 4,
+          py: { xs: 2, sm: 4 },
         }}
       >
         <Container maxWidth="lg">
@@ -143,8 +121,9 @@ export default function SubmissionsPage() {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
                 justifyContent: "flex-end",
-                gap:1.5
+                gap: 1.5,
               }}
             >
               <Button
@@ -158,6 +137,7 @@ export default function SubmissionsPage() {
                   fontSize: "0.95rem",
                   px: 3,
                   py: 1.2,
+                  width: { xs: "100%", sm: "auto" },
                   "&:hover": {
                     backgroundColor: "#e0f2f1",
                     borderColor: "#1f6b6b",
@@ -171,9 +151,8 @@ export default function SubmissionsPage() {
                 onClick={handleOpenNewSubmission}
                 sx={{
                   backgroundColor: "#2a8b8b",
-                  "&:hover": {
-                    backgroundColor: "#1f6b6b",
-                  },
+                  width: { xs: "100%", sm: "auto" },
+                  "&:hover": { backgroundColor: "#1f6b6b" },
                 }}
               >
                 Add New Submission
@@ -188,10 +167,12 @@ export default function SubmissionsPage() {
           </Stack>
         </Container>
       </Box>
+
       <FormBuilder
         open={openFormBuilder}
-        onClose={() => {setOpenFormBuilder(false)}}
+        onClose={() => setOpenFormBuilder(false)}
       />
+
       <Dialog
         open={openSelector}
         onClose={() => setOpenSelector(false)}
@@ -201,14 +182,8 @@ export default function SubmissionsPage() {
         <DialogTitle>Select Form</DialogTitle>
 
         <DialogContent>
-          <FormControl
-            fullWidth
-            sx={{
-              mt: 2,
-            }}
-          >
+          <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>Select Form</InputLabel>
-
             <Select
               value={selectedFormId}
               label="Select Form"
@@ -223,13 +198,25 @@ export default function SubmissionsPage() {
           </FormControl>
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={() => setOpenSelector(false)}>Cancel</Button>
-
+        <DialogActions
+          sx={{
+            flexDirection: { xs: "column-reverse", sm: "row" },
+            px: { xs: 2, sm: 1 },
+            pb: { xs: 2, sm: 1 },
+            gap: { xs: 1, sm: 0 },
+          }}
+        >
+          <Button
+            onClick={() => setOpenSelector(false)}
+            sx={{ width: { xs: "100%", sm: "auto" } }}
+          >
+            Cancel
+          </Button>
           <Button
             variant="contained"
             disabled={!selectedFormId}
             onClick={handleContinueForm}
+            sx={{ width: { xs: "100%", sm: "auto" } }}
           >
             Continue
           </Button>
@@ -249,26 +236,13 @@ export default function SubmissionsPage() {
       <Snackbar
         open={toast.open}
         autoHideDuration={3000}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        onClose={() =>
-          setToast((prev) => ({
-            ...prev,
-            open: false,
-          }))
-        }
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setToast((prev) => ({ ...prev, open: false }))}
       >
         <Alert
           severity={toast.severity}
           variant="filled"
-          onClose={() =>
-            setToast((prev) => ({
-              ...prev,
-              open: false,
-            }))
-          }
+          onClose={() => setToast((prev) => ({ ...prev, open: false }))}
         >
           {toast.message}
         </Alert>

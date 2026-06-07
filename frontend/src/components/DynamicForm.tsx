@@ -54,7 +54,15 @@ function UnsavedWarningDialog({
           will be lost. Do you want to continue?
         </DialogContentText>
       </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
+      {/* Change 7: stack warning dialog actions on mobile */}
+      <DialogActions
+        sx={{
+          px: 3,
+          pb: 2,
+          gap: 1,
+          flexDirection: { xs: "column-reverse", sm: "row" },
+        }}
+      >
         <Button
           variant="outlined"
           onClick={onStay}
@@ -63,6 +71,7 @@ function UnsavedWarningDialog({
             color: "#333",
             textTransform: "none",
             borderRadius: "6px",
+            width: { xs: "100%", sm: "auto" },
             "&:hover": { backgroundColor: "#f0f0f0", borderColor: "#333" },
           }}
         >
@@ -75,6 +84,7 @@ function UnsavedWarningDialog({
             backgroundColor: "#ef4444",
             textTransform: "none",
             borderRadius: "6px",
+            width: { xs: "100%", sm: "auto" },
             "&:hover": { backgroundColor: "#dc2626" },
           }}
         >
@@ -151,7 +161,7 @@ export default function DynamicForm({
     open: boolean;
     onConfirm: (() => void) | null;
   }>({ open: false, onConfirm: null });
-    const savedSnapshotRef = useRef<Record<string, string>>({});
+  const savedSnapshotRef = useRef<Record<string, string>>({});
 
   const checkDirty = (values: typeof formValues, stepId: string) => {
     const currentStr = JSON.stringify(values[stepId] ?? {});
@@ -242,12 +252,12 @@ export default function DynamicForm({
         completedSteps: completedStepsArray,
       });
 
-     formConfig.steps.forEach((step) => {
-       savedSnapshotRef.current[step.id] = JSON.stringify(
-         newFormValues[step.id] ?? {}
-       );
-     });
-     setIsDirty(false);
+      formConfig.steps.forEach((step) => {
+        savedSnapshotRef.current[step.id] = JSON.stringify(
+          newFormValues[step.id] ?? {}
+        );
+      });
+      setIsDirty(false);
     }
   }, [formConfig, editingSubmission]);
 
@@ -308,7 +318,8 @@ export default function DynamicForm({
     } catch {
       setToast({
         open: true,
-        message: "Failed to create submission, check if all required fields are filled.",
+        message:
+          "Failed to create submission, check if all required fields are filled.",
         severity: "error",
       });
       return null;
@@ -362,7 +373,7 @@ export default function DynamicForm({
       } else {
         await saveCurrentStep(subId);
       }
-      markClean(); 
+      markClean();
       markStepCompleted(currentStep);
       if (currentStep < formConfig.steps.length - 1)
         setCurrentStep(currentStep + 1);
@@ -393,7 +404,7 @@ export default function DynamicForm({
       }
       await completeMutation.mutateAsync(subId);
       markStepCompleted(currentStep);
-      markClean(); // NEW
+      markClean();
       resetForm();
       setToast({
         open: true,
@@ -452,14 +463,27 @@ export default function DynamicForm({
         onStay={handleWarnStay}
         onLeave={handleWarnLeave}
       />
-
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="md"
+        fullWidth
+        slotProps={{
+          paper: {
+            sx: {
+              margin: { xs: 1, sm: 4 },
+              width: { xs: "100%", sm: "auto" },
+            },
+          },
+        }}
+      >
         <DialogTitle
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-start",
             pb: 1,
+            px: { xs: 2, sm: 3 },
           }}
         >
           <Box>
@@ -475,11 +499,20 @@ export default function DynamicForm({
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{ pt: 3, minHeight: "600px" }}>
+        <DialogContent
+          sx={{
+            pt: 3,
+            minHeight: { xs: "auto", sm: "600px" },
+            px: { xs: 2, sm: 3 },
+          }}
+        >
           <Box sx={{ mb: 3 }}>
             <Tabs
               value={currentStep}
               onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              allowScrollButtonsMobile
               sx={{
                 mb: 3,
                 "& .MuiTabs-flexContainer": { borderBottom: "none" },
@@ -492,9 +525,10 @@ export default function DynamicForm({
                   sx={{
                     color: "#ccc",
                     fontWeight: 500,
-                    fontSize: "0.95rem",
+                    fontSize: "0.75rem",
                     pb: 1.5,
                     pt: 0,
+                    px: 2, 
                     "&.Mui-selected": { color: "#1a1a1a" },
                     position: "relative",
                     "&:after": completedSteps[index]
@@ -526,38 +560,41 @@ export default function DynamicForm({
             ))}
 
             <Stack
-              direction="row"
+              direction={{ xs: "column-reverse", sm: "row" }}
               spacing={1.5}
               sx={{
                 mt: 3,
-                justifyContent: hasBackButton ? "space-between" : "flex-end",
-                alignItems: "center",
+                justifyContent: {
+                  sm: hasBackButton ? "space-between" : "flex-end",
+                },
+                alignItems: { xs: "stretch", sm: "center" },
               }}
             >
               {hasBackButton && (
                 <Button
                   variant="outlined"
+                  onClick={handleBackStep}
                   sx={{
                     borderColor: "#ccc",
                     color: "#333",
                     borderRadius: "6px",
                     textTransform: "none",
                     fontSize: "0.95rem",
+                    width: { xs: "100%", sm: "auto" },
                     "&:hover": {
                       backgroundColor: "#f0f0f0",
                       borderColor: "#333",
                     },
                   }}
-                  onClick={handleBackStep}
                 >
                   Back
                 </Button>
               )}
 
               <Stack
-                direction="row"
+                direction={{ xs: "column", sm: "row" }}
                 spacing={1.5}
-                sx={{ alignItems : "center" }}
+                sx={{ alignItems: { xs: "stretch", sm: "center" } }}
               >
                 {isDirty && <UnsavedBadge />}
 
@@ -566,32 +603,34 @@ export default function DynamicForm({
                     <Button
                       variant="outlined"
                       disabled={isSubmitting}
+                      onClick={handleSave}
                       sx={{
                         borderColor: "#ccc",
                         color: "#2a8b8b",
                         borderRadius: "6px",
                         textTransform: "none",
                         fontSize: "0.95rem",
+                        width: { xs: "100%", sm: "auto" },
                         "&:hover": {
                           backgroundColor: "#f0f0f0",
                           borderColor: "#2a8b8b",
                         },
                       }}
-                      onClick={handleSave}
                     >
                       Save
                     </Button>
                     <Button
                       variant="contained"
                       disabled={isSubmitting}
+                      onClick={handleSaveAndNext}
                       sx={{
                         backgroundColor: "#2a8b8b",
                         borderRadius: "6px",
                         textTransform: "none",
                         fontSize: "0.95rem",
+                        width: { xs: "100%", sm: "auto" },
                         "&:hover": { backgroundColor: "#1f6b6b" },
                       }}
-                      onClick={handleSaveAndNext}
                     >
                       Save and Next
                     </Button>
@@ -602,14 +641,15 @@ export default function DynamicForm({
                   <Button
                     variant="contained"
                     disabled={isSubmitting}
+                    onClick={handleSubmit}
                     sx={{
                       backgroundColor: "#2a8b8b",
                       borderRadius: "6px",
                       textTransform: "none",
                       fontSize: "0.95rem",
+                      width: { xs: "100%", sm: "auto" },
                       "&:hover": { backgroundColor: "#1f6b6b" },
                     }}
-                    onClick={handleSubmit}
                   >
                     Submit
                   </Button>

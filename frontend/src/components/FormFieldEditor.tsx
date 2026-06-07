@@ -16,7 +16,13 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import CloseIcon from "@mui/icons-material/Close";
-import { FIELD_TYPE_LABELS, FIELD_TYPES, slugify, type BuilderField, type FieldType } from "../types/formBuilder.types";
+import {
+  FIELD_TYPE_LABELS,
+  FIELD_TYPES,
+  slugify,
+  type BuilderField,
+  type FieldType,
+} from "../types/formBuilder.types";
 
 interface FormFieldEditorProps {
   stepKey: string;
@@ -63,11 +69,15 @@ export default function FormFieldEditor({
       sx={{
         border: "1px solid #f0f0f0",
         borderRadius: "6px",
-        p: 2,
+        p: { xs: 1.5, sm: 2 },
         backgroundColor: "#fff",
       }}
     >
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: "flex-start" }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={1.5}
+        sx={{ alignItems: "flex-start" }}
+      >
         <TextField
           label="Field Label"
           placeholder="e.g. Full Name"
@@ -76,9 +86,16 @@ export default function FormFieldEditor({
           error={!!errors[`field_${field._key}_label`]}
           helperText={errors[`field_${field._key}_label`]}
           size="small"
-          sx={{ flex: 2, "& .MuiOutlinedInput-root": { borderRadius: "6px" } }}
+          sx={{
+            flex: 2,
+            width: { xs: "100%", sm: "auto" },
+            "& .MuiOutlinedInput-root": { borderRadius: "6px" },
+          }}
         />
-        <FormControl size="small" sx={{ flex: 1 }}>
+        <FormControl
+          size="small"
+          sx={{ flex: 1, width: { xs: "100%", sm: "auto" } }}
+        >
           <InputLabel>Type</InputLabel>
           <Select
             value={field.type}
@@ -95,7 +112,16 @@ export default function FormFieldEditor({
             ))}
           </Select>
         </FormControl>
-        <Box sx={{ display: "flex", alignItems: "center", pt: 0.5 }}>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            pt: { xs: 0, sm: 0.5 },
+            justifyContent: "space-between",
+            width: { xs: "100%", sm: "auto" },
+          }}
+        >
           <FormControlLabel
             control={
               <Switch
@@ -122,19 +148,35 @@ export default function FormFieldEditor({
             }
             sx={{ m: 0 }}
           />
+          {canRemove && (
+            <IconButton
+              size="small"
+              onClick={() => onRemove(stepKey, field._key)}
+              sx={{
+                color: "#ccc",
+                "&:hover": { color: "#e57373" },
+                display: { xs: "inline-flex", sm: "none" }, // mobile only
+              }}
+            >
+              <DeleteOutlineIcon fontSize="small" />
+            </IconButton>
+          )}
         </Box>
         {canRemove && (
           <IconButton
             size="small"
             onClick={() => onRemove(stepKey, field._key)}
-            sx={{ color: "#ccc", "&:hover": { color: "#e57373" }, mt: 0.25 }}
+            sx={{
+              color: "#ccc",
+              "&:hover": { color: "#e57373" },
+              mt: 0.25,
+              display: { xs: "none", sm: "inline-flex" }, // desktop only
+            }}
           >
             <DeleteOutlineIcon fontSize="small" />
           </IconButton>
         )}
       </Stack>
-
-      {/* Placeholder */}
       {hasPlaceholder && (
         <Box sx={{ mt: 1.5 }}>
           <TextField
@@ -150,7 +192,6 @@ export default function FormFieldEditor({
         </Box>
       )}
 
-      {/* Options */}
       {hasOptions && (
         <Box sx={{ mt: 1.5 }}>
           <Typography
@@ -171,9 +212,9 @@ export default function FormFieldEditor({
             {(field.options || []).map((opt, oi) => (
               <Stack
                 key={oi}
-                direction="row"
+                direction={{ xs: "column", sm: "row" }}
                 spacing={1}
-                sx={{ alignItems: "center" }}
+                sx={{ alignItems: { xs: "stretch", sm: "center" } }}
               >
                 <TextField
                   placeholder="Label (e.g. Male)"
@@ -225,7 +266,11 @@ export default function FormFieldEditor({
                   <IconButton
                     size="small"
                     onClick={() => onRemoveOption(stepKey, field._key, oi)}
-                    sx={{ color: "#ccc", "&:hover": { color: "#e57373" } }}
+                    sx={{
+                      color: "#ccc",
+                      "&:hover": { color: "#e57373" },
+                      alignSelf: { xs: "flex-end", sm: "center" },
+                    }}
                   >
                     <CloseIcon fontSize="small" />
                   </IconButton>
@@ -250,7 +295,6 @@ export default function FormFieldEditor({
           </Stack>
         </Box>
       )}
-
       <Stack direction="row" spacing={1.5} sx={{ mt: 1.5 }}>
         <TextField
           label="Min length"
@@ -265,14 +309,10 @@ export default function FormFieldEditor({
           }
           size="small"
           sx={{
-            width: 120,
+            width: { xs: "100%", sm: 120 },
             "& .MuiOutlinedInput-root": { borderRadius: "6px" },
           }}
-          slotProps={{
-            htmlInput: {
-              min: 0,
-            },
-          }}
+          slotProps={{ htmlInput: { min: 0 } }}
         />
         <TextField
           label="Max length"
@@ -287,14 +327,10 @@ export default function FormFieldEditor({
           }
           size="small"
           sx={{
-            width: 120,
+            width: { xs: "100%", sm: 120 },
             "& .MuiOutlinedInput-root": { borderRadius: "6px" },
           }}
-          slotProps={{
-            htmlInput: {
-              min: 0,
-            },
-          }}
+          slotProps={{ htmlInput: { min: 0 } }}
         />
       </Stack>
     </Box>

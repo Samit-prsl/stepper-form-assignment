@@ -80,12 +80,12 @@ const CustomTableComponent = forwardRef<CustomTableRef, CustomTableProps>(
           borderRadius: 2,
         }}
       >
-        {/* Header row: title + filter */}
         <Stack
-          direction="row"
+          direction={{ xs: "column", sm: "row" }}
           sx={{
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: { xs: "flex-start", sm: "center" },
+            gap: { xs: 2, sm: 0 },
             mb: 3,
           }}
         >
@@ -95,7 +95,7 @@ const CustomTableComponent = forwardRef<CustomTableRef, CustomTableProps>(
 
           <FormControl size="small" sx={{ minWidth: 180 }}>
             <InputLabel id="status-filter-label">
-              <Stack direction="row" sx={{alignItems : "center", gap: 0.5 }}>
+              <Stack direction="row" sx={{ alignItems: "center", gap: 0.5 }}>
                 Status
               </Stack>
             </InputLabel>
