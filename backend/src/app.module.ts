@@ -1,16 +1,22 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { FormConfigModule } from './modules/form-config/form-config.module';
 import { SubmissionsModule } from './modules/submissions/submissions.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
-
-    MongooseModule.forRoot(process.env.MONGO_URI!),
-
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const uri =
+          configService.get<string>('DEPLOYED_MONGO_URI') ||
+          configService.get<string>('MONGO_URI');
+        return { uri };
+      },
+    }),
     FormConfigModule,
     SubmissionsModule,
   ],

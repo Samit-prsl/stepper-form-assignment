@@ -151,11 +151,11 @@ export default function DynamicForm({
     open: boolean;
     onConfirm: (() => void) | null;
   }>({ open: false, onConfirm: null });
-  const savedSnapshotRef = useRef<string>("");
+    const savedSnapshotRef = useRef<Record<string, string>>({});
 
   const checkDirty = (values: typeof formValues, stepId: string) => {
     const currentStr = JSON.stringify(values[stepId] ?? {});
-    return currentStr !== savedSnapshotRef.current;
+    return currentStr !== (savedSnapshotRef.current[stepId] ?? "");
   };
 
   useEffect(() => {
@@ -169,7 +169,7 @@ export default function DynamicForm({
     if (!formConfig) return;
     const stepId = formConfig.steps[currentStep]?.id;
     if (!stepId) return;
-    savedSnapshotRef.current = JSON.stringify(formValues[stepId] ?? {});
+    savedSnapshotRef.current[stepId] = JSON.stringify(formValues[stepId] ?? {});
     setIsDirty(false);
   };
 
@@ -186,7 +186,7 @@ export default function DynamicForm({
   const handleWarnLeave = () => {
     const cb = warnDialog.onConfirm;
     setWarnDialog({ open: false, onConfirm: null });
-    setIsDirty(false); // discard changes
+    setIsDirty(false);
     cb?.();
   };
 
@@ -242,11 +242,12 @@ export default function DynamicForm({
         completedSteps: completedStepsArray,
       });
 
-      const initialStepId = formConfig.steps[0]?.id;
-      savedSnapshotRef.current = JSON.stringify(
-        newFormValues[initialStepId] ?? {}
-      );
-      setIsDirty(false);
+     formConfig.steps.forEach((step) => {
+       savedSnapshotRef.current[step.id] = JSON.stringify(
+         newFormValues[step.id] ?? {}
+       );
+     });
+     setIsDirty(false);
     }
   }, [formConfig, editingSubmission]);
 

@@ -70,6 +70,11 @@ export default function SubmissionsPage() {
     setSelectedFormId("");
 
     setOpenSelector(true);
+
+     await queryClient.invalidateQueries({
+       queryKey: ["formConfig"],
+     });
+
   };
 
   const handleContinueForm = () => {
@@ -79,6 +84,10 @@ export default function SubmissionsPage() {
 
     setOpenForm(true);
   };
+
+  const handleOpenNewForm = async () => {
+    setOpenFormBuilder(true)
+  }
 
   const handleEditSubmission = async (submissionId: string) => {
     try {
@@ -140,7 +149,7 @@ export default function SubmissionsPage() {
             >
               <Button
                 variant="outlined"
-                onClick={() => setOpenFormBuilder(true)}
+                onClick={handleOpenNewForm}
                 sx={{
                   borderColor: "#2a8b8b",
                   color: "#2a8b8b",
